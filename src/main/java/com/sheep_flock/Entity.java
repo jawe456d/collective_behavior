@@ -1,11 +1,13 @@
 package com.sheep_flock;
 
-public class SpatialObject {
+import com.sheep_flock.geometry.*;
+
+public class Entity {
 
     private Position position;
     private IShape shape;
 
-    public SpatialObject(Position position, IShape shape) {
+    public Entity(Position position, IShape shape) {
         this.position = position;
         this.shape = shape;
     }
@@ -24,5 +26,15 @@ public class SpatialObject {
 
     public void setShape(IShape shape) {
         this.shape = shape;
+    }
+
+    public void choose_action() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'choose_action'");
+    }
+
+    public void act() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'act'");
     }
 }

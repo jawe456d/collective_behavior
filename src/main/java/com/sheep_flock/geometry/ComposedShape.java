@@ -1,4 +1,4 @@
-package com.sheep_flock;
+package com.sheep_flock.geometry;
 
 import java.util.HashSet;
 import java.util.Set;

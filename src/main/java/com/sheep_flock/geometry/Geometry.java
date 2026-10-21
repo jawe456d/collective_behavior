@@ -1,4 +1,4 @@
-package com.sheep_flock;
+package com.sheep_flock.geometry;
 
 public class Geometry {
 
