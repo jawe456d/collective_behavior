@@ -3,20 +3,21 @@ package com.sheep_flock.geometry;
 public class Geometry {
 
     /**
-     * Calculates the distance between an oval and a rectangle (defined by its center).
+     * Calculates the distance between an oval and a rectangle (defined by its
+     * center).
      * 
-     * @param ovalX   Center X of the oval
-     * @param ovalY   Center Y of the oval
-     * @param ovalRx  Horizontal radius of the oval
-     * @param ovalRy  Vertical radius of the oval
-     * @param rectX   Center X of the rectangle
-     * @param rectY   Center Y of the rectangle
-     * @param rectW   Width of the rectangle
-     * @param rectH   Height of the rectangle
+     * @param ovalX  Center X of the oval
+     * @param ovalY  Center Y of the oval
+     * @param ovalRx Horizontal radius of the oval
+     * @param ovalRy Vertical radius of the oval
+     * @param rectX  Center X of the rectangle
+     * @param rectY  Center Y of the rectangle
+     * @param rectW  Width of the rectangle
+     * @param rectH  Height of the rectangle
      * @return Minimum distance (0 if touching or overlapping)
      */
     public static float distanceOvalRect(float ovalX, float ovalY, float ovalRx, float ovalRy,
-                                         float rectX, float rectY, float rectW, float rectH) {
+            float rectX, float rectY, float rectW, float rectH) {
         // Convert rectangle center to min/max bounds for easier calculation
         float rectMinX = rectX - rectW / 2.0f;
         float rectMaxX = rectX + rectW / 2.0f;
@@ -29,21 +30,29 @@ public class Geometry {
 
         float distX = ovalX - closestX;
         float distY = ovalY - closestY;
-        
-        // Approximate distance considering oval radii (simplified circular approximation or standard Euclidean)
+
+        // Approximate distance considering oval radii (simplified circular
+        // approximation or standard Euclidean)
         float distanceToClosestPoint = (float) Math.sqrt(distX * distX + distY * distY);
-        
-        // Using average radius or simple approximation for oval radius towards the point
-        float effectiveRadius = (ovalRx + ovalRy) / 2.0f; 
+
+        // Using average radius or simple approximation for oval radius towards the
+        // point
+        float effectiveRadius = (ovalRx + ovalRy) / 2.0f;
 
         return Math.max(0.0f, distanceToClosestPoint - effectiveRadius);
+    }
+
+    public static float distanceOvalRect(Oval oval1, Rectangle rect2) {
+        return distanceOvalOval(oval1.absoluteX(), oval1.absoluteY(), oval1.radiusX(),
+                oval1.radiusY(), rect2.absoluteX(), rect2.absoluteY(), rect2.width(),
+                rect2.height());
     }
 
     /**
      * Calculates the minimum distance between two ovals (or circles).
      */
     public static float distanceOvalOval(float x1, float y1, float rx1, float ry1,
-                                         float x2, float y2, float rx2, float ry2) {
+            float x2, float y2, float rx2, float ry2) {
         float distX = x2 - x1;
         float distY = y2 - y1;
         float centerDistance = (float) Math.sqrt(distX * distX + distY * distY);
@@ -54,11 +63,18 @@ public class Geometry {
         return Math.max(0.0f, centerDistance - (r1 + r2));
     }
 
+    public static float distanceOvalOval(Oval oval1, Oval oval2) {
+        return distanceOvalOval(oval1.absoluteX(), oval1.absoluteY(), oval1.radiusX(),
+                oval1.radiusY(), oval2.absoluteX(), oval2.absoluteY(), oval2.radiusX(),
+                oval2.radiusY());
+    }
+
     /**
-     * Calculates the minimum distance between two rectangles (defined by their centers).
+     * Calculates the minimum distance between two rectangles (defined by their
+     * centers).
      */
     public static float distanceRectRect(float x1, float y1, float w1, float h1,
-                                         float x2, float y2, float w2, float h2) {
+            float x2, float y2, float w2, float h2) {
         float minX1 = x1 - w1 / 2.0f;
         float maxX1 = x1 + w1 / 2.0f;
         float minY1 = y1 - h1 / 2.0f;
@@ -74,4 +90,11 @@ public class Geometry {
 
         return (float) Math.sqrt(gapX * gapX + gapY * gapY);
     }
+
+    public static float distanceRectRect(Rectangle rect1, Rectangle rect2) {
+        return distanceOvalOval(rect1.absoluteX(), rect1.absoluteY(), rect1.width(),
+                rect1.height(), rect2.absoluteX(), rect2.absoluteY(), rect2.width(),
+                rect2.height());
+    }
+
 }

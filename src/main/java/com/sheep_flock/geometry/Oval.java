@@ -1,59 +1,51 @@
 package com.sheep_flock.geometry;
 
-public class Oval implements IShape {
+import com.sheep_flock.IShapeVisitor;
 
-    private Position position;
+public class Oval extends Shape {
+
     private float radiusX;
     private float radiusY;
 
-    public Oval(float relativeX, float relativeY, boolean isRoot, float radiusX, float radiusY) {
-        this.position = new Position(relativeX, relativeY, isRoot);
+    public Oval(float relativeX, float relativeY, float radiusX, float radiusY) {
+        super(relativeX, relativeY);
         this.radiusX = radiusX;
         this.radiusY = radiusY;
     }
 
     @Override
-    public ShapeKind kind() {
-        return ShapeKind.OVAL;
+    public float distance(Shape otherShape) {
+        return otherShape.accept(this);
     }
 
     @Override
-    public float distance(IShape otherShape) {
-        if (otherShape.kind() == ShapeKind.OVAL) {
-            Oval other = (Oval) otherShape;
-            return Geometry.distanceOvalOval(
-                this.position.getAbsoluteX(), this.position.getAbsoluteY(), this.radiusX, this.radiusY,
-                other.position.getAbsoluteX(), other.position.getAbsoluteY(), other.radiusX, other.radiusY
-            );
-        } else if (otherShape.kind() == ShapeKind.RECTANGLE) {
-            Rectangle other = (Rectangle) otherShape;
-            return Geometry.distanceOvalRect(
-                this.position.getAbsoluteX(), this.position.getAbsoluteY(), this.radiusX, this.radiusY,
-                other.getPosition().getAbsoluteX(), other.getPosition().getAbsoluteY(), other.getWidth(), other.getHeight()
-            );
-        } else if (otherShape.kind() == ShapeKind.COMPOSED) {
-            return otherShape.distance(this);
-        }
-        throw new IllegalArgumentException("Unsupported shape kind");
+    public <T> T accept(IShapeVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
+    public float radiusX() {
+        return radiusX;
+    }
+
+    public void setRadiusX(float radiusX) {
+        this.radiusX = radiusX;
+    }
+
+    public float radiusY() {
+        return radiusY;
+    }
+
+    public void setRadiusY(float radiusY) {
+        this.radiusY = radiusY;
     }
 
     @Override
-    public boolean hit(IShape otherShape) {
-        return distance(otherShape) <= 0.0f;
+    public Float visit(Oval oval) {
+        return Geometry.distanceOvalOval(this, oval);
     }
 
     @Override
-    public Position getPosition() {
-        return position;
+    public Float visit(Rectangle rect) {
+        return Geometry.distanceOvalRect(this, rect);
     }
-
-    @Override
-    public void updateAbsolutePosition(float parentAbsX, float parentAbsY) {
-        this.position.updateAbsolute(parentAbsX, parentAbsY);
-    }
-
-    public float getRadiusX() { return radiusX; }
-    public void setRadiusX(float radiusX) { this.radiusX = radiusX; }
-    public float getRadiusY() { return radiusY; }
-    public void setRadiusY(float radiusY) { this.radiusY = radiusY; }
 }

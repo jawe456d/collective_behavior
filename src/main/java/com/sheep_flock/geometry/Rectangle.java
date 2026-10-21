@@ -1,59 +1,58 @@
 package com.sheep_flock.geometry;
 
-public class Rectangle implements IShape {
+import java.util.Set;
 
-    private Position position;
+import com.sheep_flock.IShapeVisitor;
+
+public class Rectangle extends Shape {
+
     private float width;
     private float height;
 
-    public Rectangle(float relativeX, float relativeY, boolean isRoot, float width, float height) {
-        this.position = new Position(relativeX, relativeY, isRoot);
+    public Rectangle(float relativeX, float relativeY, float width, float height) {
+        super(relativeX, relativeY);
         this.width = width;
         this.height = height;
     }
 
-    @Override
-    public ShapeKind kind() {
-        return ShapeKind.RECTANGLE;
+    public float width() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float height() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public Set<Shape> getSubshapes(){
+        return null;
     }
 
     @Override
-    public float distance(IShape otherShape) {
-        if (otherShape.kind() == ShapeKind.OVAL) {
-            Oval other = (Oval) otherShape;
-            return Geometry.distanceOvalRect(
-                other.getPosition().getAbsoluteX(), other.getPosition().getAbsoluteY(), other.getRadiusX(), other.getRadiusY(),
-                this.position.getAbsoluteX(), this.position.getAbsoluteY(), this.width, this.height
-            );
-        } else if (otherShape.kind() == ShapeKind.RECTANGLE) {
-            Rectangle other = (Rectangle) otherShape;
-            return Geometry.distanceRectRect(
-                this.position.getAbsoluteX(), this.position.getAbsoluteY(), this.width, this.height,
-                other.position.getAbsoluteX(), other.position.getAbsoluteY(), other.width, other.height
-            );
-        } else if (otherShape.kind() == ShapeKind.COMPOSED) {
-            return otherShape.distance(this);
-        }
-        throw new IllegalArgumentException("Unsupported shape kind");
+    public <T> T accept(IShapeVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     @Override
-    public boolean hit(IShape otherShape) {
-        return distance(otherShape) <= 0.0f;
+    public Float visit(Oval oval) {
+         return Geometry.distanceOvalRect(oval, this);
     }
 
     @Override
-    public Position getPosition() {
-        return position;
+    public Float visit(Rectangle rect) {
+        return Geometry.distanceRectRect(this, rect);
     }
 
     @Override
-    public void updateAbsolutePosition(float parentAbsX, float parentAbsY) {
-        this.position.updateAbsolute(parentAbsX, parentAbsY);
+    public float distance(Shape otherShape) {
+        return otherShape.accept(this);
     }
-
-    public float getWidth() { return width; }
-    public void setWidth(float width) { this.width = width; }
-    public float getHeight() { return height; }
-    public void setHeight(float height) { this.height = height; }
+    
 }

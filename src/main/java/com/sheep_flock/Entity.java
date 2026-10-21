@@ -1,40 +1,59 @@
 package com.sheep_flock;
 
+import java.util.HashSet;
+import java.util.Set;
 import com.sheep_flock.geometry.*;
 
-public class Entity {
+public abstract class Entity {
 
-    private Position position;
-    private IShape shape;
+    private float absoluteX;
+    private float absoluteY;
+    private Shape shape;
+    private Set<Behaviour> behaviours;
+    private Set<Action> actions;
+    private float deltaX;
+    private float deltaY;
 
-    public Entity(Position position, IShape shape) {
-        this.position = position;
-        this.shape = shape;
+    public Entity(float absoluteX, float absoluteY) {
+        this.absoluteX = absoluteX;
+        this.absoluteY = absoluteY;
+        this.shape = generateMyShape();
+        this.behaviours = new HashSet<Behaviour>();
+        this.actions = new HashSet<Action>();
     }
 
-    public Position getPosition() {
-        return position;
+    public void setPosition(float absoluteX, float absoluteY) {
+        this.absoluteX = absoluteX;
+        this.absoluteY = absoluteY;
+        this.shape.updateAbsolutePosition(absoluteX, absoluteY);
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public IShape getShape() {
+    public Shape shape() {
         return shape;
     }
 
-    public void setShape(IShape shape) {
+    public void setShape(Shape shape) {
         this.shape = shape;
     }
 
     public void choose_action() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'choose_action'");
+        actions.clear();
+        float totalIntensity = 0;
+        float totalDeltaX = 0;
+        float totalDeltaY = 0;
+        for (Behaviour behaviour : behaviours){
+            Action action = behaviour.evaluate(this);
+            totalIntensity += action.intensity();
+            totalDeltaX += action.deltaX() * action.intensity();
+            totalDeltaY += action.deltaY() * action.intensity();
+        }
+        deltaX = totalDeltaX/totalIntensity;
+        deltaY = totalDeltaY/totalIntensity;
     }
 
     public void act() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'act'");
+        this.setPosition(absoluteX+deltaX, absoluteY+deltaY);
     }
+
+    abstract Shape generateMyShape();
 }

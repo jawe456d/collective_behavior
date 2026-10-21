@@ -3,62 +3,69 @@ package com.sheep_flock.geometry;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ComposedShape implements IShape {
+import com.sheep_flock.IShapeVisitor;
 
-    private Position position;
-    private Set<IShape> subshapes;
+public class ComposedShape extends Shape {
 
-    public ComposedShape(float relativeX, float relativeY, boolean isRoot) {
-        this.position = new Position(relativeX, relativeY, isRoot);
+    private Set<Shape> subshapes;
+
+    public ComposedShape(float relativeX, float relativeY) {
+        super(relativeX, relativeY);
         this.subshapes = new HashSet<>();
     }
 
-    public void addSubshape(IShape shape) {
+    public void addSubshape(Shape shape) {
         subshapes.add(shape);
-        shape.updateAbsolutePosition(this.position.getAbsoluteX(), this.position.getAbsoluteY());
     }
 
-    public void removeSubshape(IShape shape) {
+    public void removeSubshape(Shape shape) {
         subshapes.remove(shape);
     }
 
-    @Override
-    public ShapeKind kind() {
-        return ShapeKind.COMPOSED;
-    }
-
-    @Override
-    public float distance(IShape otherShape) {
-        float minimumDistance = Float.POSITIVE_INFINITY;
-        for (IShape subshape : subshapes) {
-            float subDistance = subshape.distance(otherShape);
-            if (subDistance < minimumDistance) {
-                minimumDistance = subDistance;
-            }
-        }
-        return minimumDistance;
-    }
-
-    @Override
-    public boolean hit(IShape otherShape) {
-        return distance(otherShape) <= 0.0f;
-    }
-
-    @Override
-    public Position getPosition() {
-        return position;
-    }
-
-    @Override
-    public void updateAbsolutePosition(float parentAbsX, float parentAbsY) {
-        this.position.updateAbsolute(parentAbsX, parentAbsY);
-        // Immediate recursive propagation to children
-        for (IShape subshape : subshapes) {
-            subshape.updateAbsolutePosition(this.position.getAbsoluteX(), this.position.getAbsoluteY());
-        }
-    }
-
-    public Set<IShape> getSubshapes() {
+    public Set<Shape> subshapes() {
         return subshapes;
     }
+
+    @Override
+    public Float visit(Oval oval) {
+        float minDistance = Float.POSITIVE_INFINITY;
+        for (Shape subshape : subshapes){
+            float distance = subshape.distance(oval);
+            if (distance < minDistance){
+                minDistance = distance;
+            }
+        }
+        return minDistance;
+    }
+
+    @Override
+    public Float visit(Rectangle rect) {
+        float minDistance = Float.POSITIVE_INFINITY;
+        for (Shape subshape : subshapes){
+            float distance = subshape.distance(rect);
+            if (distance < minDistance){
+                minDistance = distance;
+            }
+        }
+        return minDistance;
+    }
+
+    @Override
+    public float distance(Shape otherShape){
+        return otherShape.accept(this);
+    }
+
+    @Override
+    public <T> T accept(IShapeVisitor<T> visitor){
+        return visitor.visit(this);
+    } 
+
+    @Override
+    public void updateAbsolutePosition(float parentAbsoluteX, float parentAbsoluteY) {
+        super.updateAbsolutePosition(parentAbsoluteX, parentAbsoluteY);
+        for (Shape subshape : subshapes){
+            subshape.updateAbsolutePosition(absoluteX, absoluteY);
+        }
+    }
+
 }

@@ -1,12 +1,16 @@
 package com.sheep_flock;
 
-import com.sheep_flock.geometry.IShape;
-import com.sheep_flock.geometry.Position;
+import com.sheep_flock.geometry.Shape;
 
 public class Sheep extends Entity {
-    public Sheep(Position position, IShape shape) {
-        super(position, shape);
-        //TODO Auto-generated constructor stub
+
+    public Sheep(float absoluteX, float absoluteY) {
+        super(absoluteX, absoluteY);
+    }
+
+    public Shape generateMyShape(){
+        //TODO
+        return null;
     }
 
     
