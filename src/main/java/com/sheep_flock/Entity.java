@@ -2,24 +2,24 @@ package com.sheep_flock;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.sheep_flock.Behaviours.Behaviour;
 import com.sheep_flock.geometry.*;
+import com.sheep_flock.ui.Drawer;
 
 public abstract class Entity {
 
-    private float absoluteX;
-    private float absoluteY;
-    private Shape shape;
-    private Set<Behaviour> behaviours;
-    private Set<Action> actions;
-    private float deltaX;
-    private float deltaY;
+    protected float absoluteX;
+    protected float absoluteY;
+    protected Shape shape;
+    protected Set<Behaviour> behaviours;
+    protected float deltaX;
+    protected float deltaY;
 
     public Entity(float absoluteX, float absoluteY) {
         this.absoluteX = absoluteX;
         this.absoluteY = absoluteY;
         this.shape = generateMyShape();
         this.behaviours = new HashSet<Behaviour>();
-        this.actions = new HashSet<Action>();
     }
 
     public void setPosition(float absoluteX, float absoluteY) {
@@ -37,18 +37,7 @@ public abstract class Entity {
     }
 
     public void choose_action() {
-        actions.clear();
-        float totalIntensity = 0;
-        float totalDeltaX = 0;
-        float totalDeltaY = 0;
-        for (Behaviour behaviour : behaviours){
-            Action action = behaviour.evaluate(this);
-            totalIntensity += action.intensity();
-            totalDeltaX += action.deltaX() * action.intensity();
-            totalDeltaY += action.deltaY() * action.intensity();
-        }
-        deltaX = totalDeltaX/totalIntensity;
-        deltaY = totalDeltaY/totalIntensity;
+        
     }
 
     public void act() {
@@ -56,4 +45,7 @@ public abstract class Entity {
     }
 
     abstract Shape generateMyShape();
+
+    abstract void draw(Drawer drawer);
+
 }

@@ -13,12 +13,15 @@ public class MyCanvas {
     private Stage stage;
     private Canvas canvas;
 
+    private int width;
+    private int height;
+
     public MyCanvas(Stage stage) {
         this.stage = stage;
-        canvas = new Canvas(400, 300);
+        canvas = new Canvas(width, height);
         gc = canvas.getGraphicsContext2D();
         StackPane root = new StackPane(canvas);
-        stage.setScene(new Scene(root, 400, 300));
+        stage.setScene(new Scene(root, width, height));
         stage.show();
     }
 
@@ -44,6 +47,11 @@ public class MyCanvas {
         gc.setStroke(Color.BLACK);
         gc.fillOval(200, 20, 150, 100); // Solid red oval
         gc.strokeOval(200, 20, 150, 100); // Black outline
+    }
+
+    public void setColor(Color color) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setColor'");
     }
 
 }

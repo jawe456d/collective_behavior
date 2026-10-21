@@ -2,20 +2,35 @@ package com.sheep_flock.ui; // UI Package, separate from core
 
 import com.sheep_flock.*;
 import com.sheep_flock.geometry.*;
+import javafx.scene.paint.Color;
 
 public class Drawer implements IShapeVisitor<Void> {
 
     private MyCanvas myCanvas;
+    private float currentDelta;
 
-    public Drawer(MyCanvas myCanvas){
+    public Drawer(MyCanvas myCanvas) {
         this.myCanvas = myCanvas;
     }
 
+    public void draw(Shape shape, Color color) {
+        draw(shape, color, false, false, Color.BLACK, 0);
+    }
+
     // Main entry point for drawing any shape
-    public void draw(Shape shape) {
+    public void draw(Shape shape, Color color, boolean drawOutline, boolean outlineInside, Color outlineColor,
+            float outlineThickness) {
         if (shape != null) {
+            if (drawOutline) {
+                myCanvas.setColor(outlineColor);
+                currentDelta = outlineInside ? -outlineThickness : outlineThickness;
+                shape.accept(this);
+            }
+            currentDelta = 0;
+            myCanvas.setColor(color);
             shape.accept(this);
         }
+
     }
 
     @Override
@@ -24,7 +39,7 @@ public class Drawer implements IShapeVisitor<Void> {
         float y = oval.absoluteY();
         float rx = oval.radiusX();
         float ry = oval.radiusY();
-        myCanvas.drawOval(x, y, rx, ry);
+        myCanvas.drawOval(x, y, rx + currentDelta, ry + currentDelta);
         return null;
     }
 
@@ -34,7 +49,7 @@ public class Drawer implements IShapeVisitor<Void> {
         float y = rectangle.absoluteY();
         float w = rectangle.width();
         float h = rectangle.height();
-        myCanvas.drawRectangle(x, y, w, h);
+        myCanvas.drawRectangle(x, y, w + currentDelta, h + currentDelta);
         return null;
     }
 
