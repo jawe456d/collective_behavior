@@ -9,15 +9,21 @@ import javafx.stage.Stage;
 
 public class MyCanvas {
 
-    private GraphicsContext gc;
-    private Stage stage;
-    private Canvas canvas;
+    private final GraphicsContext gc;
+    private final Stage stage;
+    private final Canvas canvas;
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
+    private Color color = Color.BLACK;
 
-    public MyCanvas(Stage stage) {
+    public MyCanvas(Stage stage, int width, int height) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Canvas dimensions must be positive");
+        }
         this.stage = stage;
+        this.width = width;
+        this.height = height;
         canvas = new Canvas(width, height);
         gc = canvas.getGraphicsContext2D();
         StackPane root = new StackPane(canvas);
@@ -32,26 +38,21 @@ public class MyCanvas {
 
     // Clean but without modifying the current printing
     public void clean(){
-        gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, width, height);
     }
 
     public void drawRectangle(float x, float y, float w, float h) {
-        gc.setFill(Color.BLUE);
-        gc.setStroke(Color.BLACK);
-        gc.fillRect(20, 20, 150, 100); // Solid blue rectangle
-        gc.strokeRect(20, 20, 150, 100); // Black outline
+        gc.setFill(color);
+        gc.fillRect(x - w / 2, y - h / 2, w, h);
     }
 
     public void drawOval(float x, float y, float rx, float ry) {
-        gc.setFill(Color.RED);
-        gc.setStroke(Color.BLACK);
-        gc.fillOval(200, 20, 150, 100); // Solid red oval
-        gc.strokeOval(200, 20, 150, 100); // Black outline
+        gc.setFill(color);
+        gc.fillOval(x - rx, y - ry, 2 * rx, 2 * ry);
     }
 
     public void setColor(Color color) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setColor'");
+        this.color = color;
     }
 
 }

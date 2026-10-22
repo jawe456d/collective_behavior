@@ -14,11 +14,14 @@ public abstract class Entity {
     protected Set<Behaviour> behaviours;
     protected float deltaX;
     protected float deltaY;
+    Behaviour currentBehaviour;
+    Action currentAction;
 
     public Entity(float absoluteX, float absoluteY) {
         this.absoluteX = absoluteX;
         this.absoluteY = absoluteY;
         this.shape = generateMyShape();
+        this.shape.updateAbsolutePosition(absoluteX, absoluteY);
         this.behaviours = new HashSet<Behaviour>();
     }
 
@@ -34,14 +37,23 @@ public abstract class Entity {
 
     public void setShape(Shape shape) {
         this.shape = shape;
+        this.shape.updateAbsolutePosition(absoluteX, absoluteY);
     }
 
     public void choose_action() {
-        
+        float maxIntensity = Float.NEGATIVE_INFINITY;
+        for (Behaviour behaviour : behaviours){
+            Action behaviourAction = behaviour.compute(this);
+            if (behaviourAction.intensity() > maxIntensity){
+                currentBehaviour = behaviour;
+                currentAction = behaviourAction;
+                maxIntensity = behaviourAction.intensity();
+            }
+        }   
     }
 
     public void act() {
-        this.setPosition(absoluteX+deltaX, absoluteY+deltaY);
+        this.setPosition(absoluteX+currentAction.deltaX(), absoluteY+currentAction.deltaY());
     }
 
     abstract Shape generateMyShape();

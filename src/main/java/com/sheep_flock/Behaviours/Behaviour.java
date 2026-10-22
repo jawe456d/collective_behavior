@@ -9,17 +9,16 @@ import com.sheep_flock.Instincts.Instinct;
 
 public abstract class Behaviour {
 
-    private Set<Instinct> instincts;
+    protected Set<Instinct> instincts;
 
     public Behaviour(){
         this.instincts = new HashSet<Instinct>();
     }
 
     public Action compute(Entity entity){
-        instincts.clear();
         Action aggregatedAction = new Action();
         for (Instinct instinct : instincts){
-            aggregatedAction.agreggate(instinct.compute(entity));
+            aggregatedAction.aggregate(instinct.compute(entity));
         }
         return aggregatedAction.getAggregated();
     }

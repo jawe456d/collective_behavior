@@ -33,13 +33,16 @@ public class Action {
         return intensity;
     }
 
-    public void agreggate(Action action) {
+    public void aggregate(Action action) {
         deltaX += action.intensity() * action.deltaX();
-        deltaX += action.intensity() * action.deltaX();
+        deltaY += action.intensity() * action.deltaY();
         intensity += action.intensity();
     }
 
     public Action getAggregated() {
+        if (intensity == 0f) {
+            return new Action();
+        }
         return new Action(deltaX / intensity, deltaY / intensity, intensity);
     }
 

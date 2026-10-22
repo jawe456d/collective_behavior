@@ -23,10 +23,10 @@ public class Drawer implements IShapeVisitor<Void> {
         if (shape != null) {
             if (drawOutline) {
                 myCanvas.setColor(outlineColor);
-                currentDelta = outlineInside ? -outlineThickness : outlineThickness;
+                currentDelta = outlineInside ? 0 : outlineThickness;
                 shape.accept(this);
             }
-            currentDelta = 0;
+            currentDelta = drawOutline && outlineInside ? -outlineThickness : 0;
             myCanvas.setColor(color);
             shape.accept(this);
         }
@@ -49,7 +49,7 @@ public class Drawer implements IShapeVisitor<Void> {
         float y = rectangle.absoluteY();
         float w = rectangle.width();
         float h = rectangle.height();
-        myCanvas.drawRectangle(x, y, w + currentDelta, h + currentDelta);
+        myCanvas.drawRectangle(x, y, w + 2 * currentDelta, h + 2 * currentDelta);
         return null;
     }
 

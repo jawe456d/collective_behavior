@@ -43,7 +43,7 @@ public class Geometry {
     }
 
     public static float distanceOvalRect(Oval oval1, Rectangle rect2) {
-        return distanceOvalOval(oval1.absoluteX(), oval1.absoluteY(), oval1.radiusX(),
+        return distanceOvalRect(oval1.absoluteX(), oval1.absoluteY(), oval1.radiusX(),
                 oval1.radiusY(), rect2.absoluteX(), rect2.absoluteY(), rect2.width(),
                 rect2.height());
     }
@@ -92,7 +92,7 @@ public class Geometry {
     }
 
     public static float distanceRectRect(Rectangle rect1, Rectangle rect2) {
-        return distanceOvalOval(rect1.absoluteX(), rect1.absoluteY(), rect1.width(),
+        return distanceRectRect(rect1.absoluteX(), rect1.absoluteY(), rect1.width(),
                 rect1.height(), rect2.absoluteX(), rect2.absoluteY(), rect2.width(),
                 rect2.height());
     }
