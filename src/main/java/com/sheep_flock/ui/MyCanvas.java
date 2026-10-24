@@ -5,6 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class MyCanvas {
@@ -41,6 +42,20 @@ public class MyCanvas {
         gc.clearRect(0, 0, width, height);
     }
 
+    public void drawStatus(String status) {
+        if (status == null || status.isEmpty()) {
+            return;
+        }
+        gc.save();
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(14));
+        String[] lines = status.split("\\R");
+        for (int i = 0; i < lines.length; i++) {
+            gc.fillText(lines[i], 10, 20 + i * 18);
+        }
+        gc.restore();
+    }
+
     public void drawRectangle(float x, float y, float w, float h) {
         gc.setFill(color);
         gc.fillRect(x - w / 2, y - h / 2, w, h);
@@ -55,4 +70,27 @@ public class MyCanvas {
         this.color = color;
     }
 
+    // --- NOUVELLES MÉTHODES POUR LA ROTATION ---
+
+    // Save the current state of the graphical context
+    public void save() {
+        gc.save();
+    }
+
+    // Restore the previous state
+    public void restore() {
+        gc.restore();
+    }
+
+    // Turn the referential around the rotation center (pivotX, pivotY) by angleRadians.
+    public void rotate(float angleRadians, float pivotX, float pivotY) {
+        // 1. Put the origin on (pivotX, pivotY)
+        gc.translate(pivotX, pivotY);
+        
+        // 2. Rotate the origin of angleRadians
+        gc.rotate(Math.toDegrees(angleRadians));
+        
+        // 3. Go back to the first origin.
+        gc.translate(-pivotX, -pivotY);
+    }
 }

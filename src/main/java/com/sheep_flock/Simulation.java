@@ -1,6 +1,7 @@
 package com.sheep_flock;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javafx.animation.AnimationTimer;
@@ -15,6 +16,8 @@ public class Simulation {
     private final MyCanvas myCanvas;
     private final Drawer drawer;
     private AnimationTimer animationTimer;
+    private long lastUpdateTime;
+    private Sheep dolly;
 
     // === CONSTUCTORS ===
 
@@ -29,8 +32,24 @@ public class Simulation {
         entities.add(entity);
     }
 
+    public void setDolly(Sheep dolly) {
+        this.dolly = dolly;
+    }
+
+    public String getStatusAsString() {
+        if (dolly == null) {
+            return "";
+        }
+        return String.format(Locale.ROOT,
+                "Dolly position X : %.2f px%nDolly position Y : %.2f px%nDolly speed : %.2f px/s",
+                dolly.getAbsoluteX(), dolly.getAbsoluteY(), dolly.getCurrentSpeed());
+    }
+
     public void removeEntity(Entity entity) {
         entities.remove(entity);
+        if (dolly == entity) {
+            dolly = null;
+        }
     }
 
     public Set<Entity> getEntities() {
@@ -39,6 +58,9 @@ public class Simulation {
 
     public void setEntities(Set<Entity> entities) {
         this.entities = entities;
+        if (dolly != null && !entities.contains(dolly)) {
+            dolly = null;
+        }
     }
 
     public void stop() {
@@ -50,6 +72,9 @@ public class Simulation {
 
     public void resume() {
         if (!killed) {
+            if (!running) {
+                lastUpdateTime = 0;
+            }
             running = true;
             if (animationTimer != null) {
                 animationTimer.start();
@@ -79,7 +104,11 @@ public class Simulation {
                         return;
                     }
                     if (running) {
-                        updateFrame();
+                        float deltaT = lastUpdateTime == 0
+                                ? 0
+                                : (now - lastUpdateTime) / 1_000_000_000f;
+                        lastUpdateTime = now;
+                        updateFrame(deltaT);
                     }
                 }
             };
@@ -87,15 +116,16 @@ public class Simulation {
         resume();
     }
 
-    private void updateFrame() {
+    private void updateFrame(float deltaT) {
         for (Entity entity : entities) {
             entity.choose_action();
         }
         myCanvas.clean();
         for (Entity entity : entities) {
-            entity.act();
+            entity.act(deltaT);
             entity.draw(drawer);
         }
+        myCanvas.drawStatus(getStatusAsString());
     }
 
 }

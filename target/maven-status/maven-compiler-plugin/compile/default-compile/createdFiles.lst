@@ -10,7 +10,6 @@ com\sheep_flock\Simulation.class
 com\sheep_flock\geometry\Rectangle.class
 com\sheep_flock\Entity.class
 com\sheep_flock\ui\IDrawer.class
-com\sheep_flock\ui\View.class
 com\sheep_flock\Behaviours\Behaviour.class
 com\sheep_flock\geometry\ComposedShape.class
 com\sheep_flock\geometry\Oval.class
@@ -18,6 +17,7 @@ com\sheep_flock\ui\Drawer.class
 com\sheep_flock\Instincts\Fleeing.class
 com\sheep_flock\ui\Pencil.class
 com\sheep_flock\Instincts\Instinct.class
+com\sheep_flock\MathUtils.class
 com\sheep_flock\Instincts\Grazing.class
 com\sheep_flock\IShapeVisitor.class
 com\sheep_flock\ui\MyCanvas.class

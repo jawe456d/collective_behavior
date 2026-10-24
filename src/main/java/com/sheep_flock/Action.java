@@ -2,16 +2,16 @@ package com.sheep_flock;
 
 public class Action {
 
-    private float deltaX;
-    private float deltaY;
+    private float desiredAngle;
+    private float desiredSpeed;
 
     private float intensity;
 
     // === CONSTUCTORS ===
 
-    public Action(float deltaX, float deltaY, float intensity) {
-        this.deltaX = deltaX;
-        this.deltaY = deltaY;
+    public Action(float desiredAngle, float desiredSpeed, float intensity) {
+        this.desiredAngle = desiredAngle;
+        this.desiredSpeed = desiredSpeed;
         this.intensity = intensity;
     }
 
@@ -21,12 +21,12 @@ public class Action {
 
     // === GETTERS ===
 
-    public float deltaX() {
-        return deltaX;
+    public float desiredSpeed() {
+        return desiredSpeed;
     }
 
-    public float deltaY() {
-        return deltaY;
+    public float desiredAngle() {
+        return desiredAngle;
     }
 
     public float intensity() {
@@ -34,8 +34,8 @@ public class Action {
     }
 
     public void aggregate(Action action) {
-        deltaX += action.intensity() * action.deltaX();
-        deltaY += action.intensity() * action.deltaY();
+        desiredSpeed += action.intensity() * action.desiredSpeed();
+        desiredAngle += action.intensity() * action.desiredAngle();
         intensity += action.intensity();
     }
 
@@ -43,7 +43,7 @@ public class Action {
         if (intensity == 0f) {
             return new Action();
         }
-        return new Action(deltaX / intensity, deltaY / intensity, intensity);
+        return new Action(desiredAngle / intensity, desiredSpeed / intensity, intensity);
     }
 
 }

@@ -7,7 +7,7 @@ public class Grazing extends Instinct {
 
     @Override
     public Action compute(Entity entity) {
-        return new Action(rand.nextFloat(-1, 1), rand.nextFloat(-1, 1), 1);
+        return new Action((float) Math.PI/2f, 100, 1);
     }
     
 }
